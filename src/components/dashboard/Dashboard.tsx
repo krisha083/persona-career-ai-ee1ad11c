@@ -179,12 +179,13 @@ export default function Dashboard() {
                   <CardDescription>{card.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button 
-                    className="w-full" 
-                    variant={card.completed ? "secondary" : "default"}
-                  >
-                    {card.completed ? "Update" : card.action}
-                  </Button>
+                <Button 
+                  className="w-full" 
+                  variant={card.completed ? "secondary" : "default"}
+                  onClick={() => window.location.href = card.href}
+                >
+                  {card.completed ? "Update" : card.action}
+                </Button>
                 </CardContent>
               </Card>
             );
