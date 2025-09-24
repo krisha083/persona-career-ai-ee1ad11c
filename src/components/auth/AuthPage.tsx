@@ -59,13 +59,44 @@ export default function AuthPage() {
     });
 
     if (error) {
+      if (error.message.includes("Email not confirmed")) {
+        toast({
+          title: "Email Not Verified",
+          description: "Please check your email and click the verification link before signing in.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Sign In Error",
+          description: error.message,
+          variant: "destructive"
+        });
+      }
+    }
+    setLoading(false);
+  };
+
+  const resendVerification = async (email: string) => {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`
+      }
+    });
+
+    if (error) {
       toast({
-        title: "Sign In Error",
+        title: "Error",
         description: error.message,
         variant: "destructive"
       });
+    } else {
+      toast({
+        title: "Verification Email Sent",
+        description: "Please check your email for the new verification link."
+      });
     }
-    setLoading(false);
   };
 
   return (
