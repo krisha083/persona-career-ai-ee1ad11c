@@ -14,7 +14,150 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      career_recommendations: {
+        Row: {
+          career_title: string
+          created_at: string
+          description: string | null
+          growth_prospects: string | null
+          id: string
+          match_score: number
+          required_skills: string[] | null
+          salary_range: string | null
+          user_id: string
+        }
+        Insert: {
+          career_title: string
+          created_at?: string
+          description?: string | null
+          growth_prospects?: string | null
+          id?: string
+          match_score: number
+          required_skills?: string[] | null
+          salary_range?: string | null
+          user_id: string
+        }
+        Update: {
+          career_title?: string
+          created_at?: string
+          description?: string | null
+          growth_prospects?: string | null
+          id?: string
+          match_score?: number
+          required_skills?: string[] | null
+          salary_range?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          age: number | null
+          cgpa: number | null
+          created_at: string
+          education_level: string | null
+          gender: string | null
+          id: string
+          name: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age?: number | null
+          cgpa?: number | null
+          created_at?: string
+          education_level?: string | null
+          gender?: string | null
+          id?: string
+          name?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age?: number | null
+          cgpa?: number | null
+          created_at?: string
+          education_level?: string | null
+          gender?: string | null
+          id?: string
+          name?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      quiz_results: {
+        Row: {
+          created_at: string
+          id: string
+          personality_type: string
+          quiz_answers: Json | null
+          riasec_scores: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          personality_type: string
+          quiz_answers?: Json | null
+          riasec_scores?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          personality_type?: string
+          quiz_answers?: Json | null
+          riasec_scores?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_interests: {
+        Row: {
+          created_at: string
+          id: string
+          interest: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interest: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interest?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_skills: {
+        Row: {
+          created_at: string
+          id: string
+          skill: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          skill: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          skill?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
