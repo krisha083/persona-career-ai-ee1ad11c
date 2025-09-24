@@ -82,10 +82,8 @@ export default function ProfileForm() {
       // Update or insert profile
       const { error: profileError } = await supabase
         .from('profiles')
-        .upsert({
-          user_id: user.id,
-          ...profile
-        });
+        .update(profile)
+        .eq('user_id', user.id);
 
       if (profileError) throw profileError;
 
