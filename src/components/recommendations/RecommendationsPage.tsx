@@ -89,6 +89,67 @@ export default function RecommendationsPage() {
     setGenerating(false);
   };
 
+  const downloadRoadmap = () => {
+    if (recommendations.length === 0) {
+      toast({
+        title: "No Recommendations",
+        description: "Generate career recommendations first to download a roadmap.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Create roadmap content
+    const roadmapContent = `CAREER ROADMAP - ${quizResult.personality_type}
+===========================================
+
+Based on your assessment results, here's your personalized career roadmap:
+
+PERSONALITY TYPE: ${quizResult.personality_type}
+
+TOP CAREER RECOMMENDATIONS:
+${recommendations.map((rec, index) => `
+${index + 1}. ${rec.career_title} (${Math.round(rec.match_score)}% Match)
+   Description: ${rec.description}
+   Salary Range: ${rec.salary_range}
+   Growth Prospects: ${rec.growth_prospects}
+   Required Skills: ${rec.required_skills.join(', ')}
+`).join('')}
+
+NEXT STEPS:
+1. Research these career paths in detail
+2. Develop the required skills through courses or experience
+3. Network with professionals in these fields
+4. Consider internships or entry-level positions
+5. Update your resume to highlight relevant skills
+
+Generated on: ${new Date().toLocaleDateString()}
+`;
+
+    // Create and download the file
+    const blob = new Blob([roadmapContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `career-roadmap-${quizResult.personality_type}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Roadmap Downloaded!",
+      description: "Your career roadmap has been saved to your downloads."
+    });
+  };
+
+  const scheduleConsultation = () => {
+    toast({
+      title: "Coming Soon!",
+      description: "Career consultation booking will be available soon. For now, use your downloaded roadmap to get started."
+    });
+  };
+
   if (!quizResult) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
@@ -228,10 +289,10 @@ export default function RecommendationsPage() {
                   {generating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Refresh Recommendations
                 </Button>
-                <Button variant="outline">
+                <Button variant="outline" onClick={downloadRoadmap}>
                   Download Career Roadmap
                 </Button>
-                <Button variant="outline">
+                <Button variant="outline" onClick={scheduleConsultation}>
                   Schedule Career Consultation
                 </Button>
               </CardContent>
