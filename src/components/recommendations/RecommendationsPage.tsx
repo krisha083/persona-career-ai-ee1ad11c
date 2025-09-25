@@ -32,6 +32,8 @@ export default function RecommendationsPage() {
   const [selectedCareer, setSelectedCareer] = useState<string>("");
   const [generatingRoadmap, setGeneratingRoadmap] = useState(false);
   const [roadmapOpen, setRoadmapOpen] = useState(false);
+  const [roadmapContent, setRoadmapContent] = useState<string>("");
+  const [roadmapViewOpen, setRoadmapViewOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -135,8 +137,8 @@ export default function RecommendationsPage() {
 
       if (error) throw error;
 
-      // Create and download the roadmap file
-      const roadmapContent = `AI-GENERATED CAREER ROADMAP
+      // Store the roadmap content for viewing
+      const fullRoadmapContent = `AI-GENERATED CAREER ROADMAP
 ===========================
 Career: ${selectedCareer}
 Personality Type: ${quizResult.personality_type}
@@ -145,19 +147,12 @@ Generated: ${new Date().toLocaleDateString()}
 ${data.roadmap}
 `;
 
-      const blob = new Blob([roadmapContent], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${selectedCareer.toLowerCase().replace(/\s+/g, '-')}-roadmap.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      setRoadmapContent(fullRoadmapContent);
+      setRoadmapViewOpen(true);
 
       toast({
         title: "Roadmap Generated!",
-        description: `Your personalized ${selectedCareer} roadmap has been downloaded.`
+        description: `Your personalized ${selectedCareer} roadmap is ready to view.`
       });
 
       setRoadmapOpen(false);
@@ -177,6 +172,23 @@ ${data.roadmap}
     toast({
       title: "Coming Soon!",
       description: "Career consultation booking will be available soon. For now, use your downloaded roadmap to get started."
+    });
+  };
+
+  const downloadRoadmap = () => {
+    const blob = new Blob([roadmapContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${selectedCareer.toLowerCase().replace(/\s+/g, '-')}-roadmap.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Downloaded!",
+      description: "Your roadmap has been downloaded as a text file."
     });
   };
 
@@ -357,6 +369,12 @@ ${data.roadmap}
                     </div>
                   </DialogContent>
                 </Dialog>
+                {roadmapContent && (
+                  <Button variant="outline" onClick={() => setRoadmapViewOpen(true)}>
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    View Last Roadmap
+                  </Button>
+                )}
                 <Button variant="outline" onClick={scheduleConsultation}>
                   <Calendar className="mr-2 h-4 w-4" />
                   Schedule Career Consultation
@@ -364,6 +382,32 @@ ${data.roadmap}
               </CardContent>
             </Card>
           )}
+
+          {/* Roadmap Viewer Dialog */}
+          <Dialog open={roadmapViewOpen} onOpenChange={setRoadmapViewOpen}>
+            <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
+              <DialogHeader>
+                <DialogTitle>Career Roadmap: {selectedCareer}</DialogTitle>
+                <DialogDescription>
+                  Your personalized AI-generated career roadmap
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex-1 overflow-y-auto p-4 bg-muted/10 rounded-lg">
+                <pre className="whitespace-pre-wrap text-sm leading-relaxed font-mono">
+                  {roadmapContent}
+                </pre>
+              </div>
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                <Button variant="outline" onClick={() => setRoadmapViewOpen(false)}>
+                  Close
+                </Button>
+                <Button onClick={downloadRoadmap}>
+                  <Download className="mr-2 h-4 w-4" />
+                  Download PDF
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>
