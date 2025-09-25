@@ -327,10 +327,6 @@ ${data.roadmap}
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-wrap gap-4">
-                <Button onClick={generateRecommendations} disabled={generating} variant="outline">
-                  {generating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Refresh Recommendations
-                </Button>
                 <Dialog open={roadmapOpen} onOpenChange={setRoadmapOpen}>
                   <DialogTrigger asChild>
                     <Button variant="outline">
@@ -375,10 +371,6 @@ ${data.roadmap}
                     View Last Roadmap
                   </Button>
                 )}
-                <Button variant="outline" onClick={scheduleConsultation}>
-                  <Calendar className="mr-2 h-4 w-4" />
-                  Schedule Career Consultation
-                </Button>
               </CardContent>
             </Card>
           )}
