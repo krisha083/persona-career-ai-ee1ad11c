@@ -6,8 +6,10 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Target, ArrowLeft, Star, DollarSign, TrendingUp, BookOpen } from "lucide-react";
+import { Loader2, Target, ArrowLeft, Star, DollarSign, TrendingUp, BookOpen, Download, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Recommendation {
   id: string;
@@ -27,6 +29,9 @@ export default function RecommendationsPage() {
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [quizResult, setQuizResult] = useState<any>(null);
+  const [selectedCareer, setSelectedCareer] = useState<string>("");
+  const [generatingRoadmap, setGeneratingRoadmap] = useState(false);
+  const [roadmapOpen, setRoadmapOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -89,58 +94,83 @@ export default function RecommendationsPage() {
     setGenerating(false);
   };
 
-  const downloadRoadmap = () => {
-    if (recommendations.length === 0) {
+  const generatePersonalizedRoadmap = async () => {
+    if (!selectedCareer) {
       toast({
-        title: "No Recommendations",
-        description: "Generate career recommendations first to download a roadmap.",
+        title: "Select a Career",
+        description: "Please select a career to generate a personalized roadmap.",
         variant: "destructive"
       });
       return;
     }
 
-    // Create roadmap content
-    const roadmapContent = `CAREER ROADMAP - ${quizResult.personality_type}
-===========================================
+    setGeneratingRoadmap(true);
 
-Based on your assessment results, here's your personalized career roadmap:
+    try {
+      // Get user profile data
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
 
-PERSONALITY TYPE: ${quizResult.personality_type}
+      // Find the selected career recommendation
+      const selectedRecommendation = recommendations.find(
+        rec => rec.career_title === selectedCareer
+      );
 
-TOP CAREER RECOMMENDATIONS:
-${recommendations.map((rec, index) => `
-${index + 1}. ${rec.career_title} (${Math.round(rec.match_score)}% Match)
-   Description: ${rec.description}
-   Salary Range: ${rec.salary_range}
-   Growth Prospects: ${rec.growth_prospects}
-   Required Skills: ${rec.required_skills.join(', ')}
-`).join('')}
+      if (!selectedRecommendation) {
+        throw new Error('Selected career not found');
+      }
 
-NEXT STEPS:
-1. Research these career paths in detail
-2. Develop the required skills through courses or experience
-3. Network with professionals in these fields
-4. Consider internships or entry-level positions
-5. Update your resume to highlight relevant skills
+      const { data, error } = await supabase.functions.invoke('generate-career-roadmap', {
+        body: {
+          careerTitle: selectedRecommendation.career_title,
+          careerDescription: selectedRecommendation.description,
+          requiredSkills: selectedRecommendation.required_skills,
+          userProfile: profile,
+          personalityType: quizResult.personality_type
+        }
+      });
 
-Generated on: ${new Date().toLocaleDateString()}
+      if (error) throw error;
+
+      // Create and download the roadmap file
+      const roadmapContent = `AI-GENERATED CAREER ROADMAP
+===========================
+Career: ${selectedCareer}
+Personality Type: ${quizResult.personality_type}
+Generated: ${new Date().toLocaleDateString()}
+
+${data.roadmap}
 `;
 
-    // Create and download the file
-    const blob = new Blob([roadmapContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `career-roadmap-${quizResult.personality_type}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+      const blob = new Blob([roadmapContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${selectedCareer.toLowerCase().replace(/\s+/g, '-')}-roadmap.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
 
-    toast({
-      title: "Roadmap Downloaded!",
-      description: "Your career roadmap has been saved to your downloads."
-    });
+      toast({
+        title: "Roadmap Generated!",
+        description: `Your personalized ${selectedCareer} roadmap has been downloaded.`
+      });
+
+      setRoadmapOpen(false);
+    } catch (error) {
+      console.error('Error generating roadmap:', error);
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate roadmap. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setGeneratingRoadmap(false);
+    }
   };
 
   const scheduleConsultation = () => {
@@ -289,10 +319,46 @@ Generated on: ${new Date().toLocaleDateString()}
                   {generating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Refresh Recommendations
                 </Button>
-                <Button variant="outline" onClick={downloadRoadmap}>
-                  Download Career Roadmap
-                </Button>
+                <Dialog open={roadmapOpen} onOpenChange={setRoadmapOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <Download className="mr-2 h-4 w-4" />
+                      Generate AI Roadmap
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Generate Career Roadmap</DialogTitle>
+                      <DialogDescription>
+                        Select a career from your recommendations to generate a personalized AI-powered roadmap.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 pt-4">
+                      <Select value={selectedCareer} onValueChange={setSelectedCareer}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a career..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {recommendations.map((rec) => (
+                            <SelectItem key={rec.id} value={rec.career_title}>
+                              {rec.career_title} ({Math.round(rec.match_score)}% match)
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button 
+                        onClick={generatePersonalizedRoadmap} 
+                        disabled={!selectedCareer || generatingRoadmap}
+                        className="w-full"
+                      >
+                        {generatingRoadmap && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Generate Roadmap
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
                 <Button variant="outline" onClick={scheduleConsultation}>
+                  <Calendar className="mr-2 h-4 w-4" />
                   Schedule Career Consultation
                 </Button>
               </CardContent>
