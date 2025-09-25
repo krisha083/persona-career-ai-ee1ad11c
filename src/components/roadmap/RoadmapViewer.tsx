@@ -119,7 +119,7 @@ export function RoadmapViewer({ open, onOpenChange, roadmapContent, selectedCare
           </DialogDescription>
         </DialogHeader>
         
-        <ScrollArea className="flex-1 pr-4">
+        <ScrollArea className="flex-1 pr-4 h-[calc(90vh-200px)]">
           <div className="space-y-6 py-4">
             {formattedSections.map((section, sectionIndex) => {
               const IconComponent = getSectionIcon(section.header);
