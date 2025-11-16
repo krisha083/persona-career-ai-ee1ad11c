@@ -48,8 +48,6 @@ export default function CareerQuiz() {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [loading, setLoading] = useState(false);
   const [existingResult, setExistingResult] = useState<any>(null);
-  const [quizCompleted, setQuizCompleted] = useState(false);
-  const [completedResult, setCompletedResult] = useState<any>(null);
 
   useEffect(() => {
     if (user) {
@@ -128,16 +126,12 @@ export default function CareerQuiz() {
 
       if (error) throw error;
 
-      setCompletedResult({
-        personality_type: personalityType,
-        riasec_scores: riasecScores
-      });
-      setQuizCompleted(true);
-
       toast({
         title: "Quiz Completed!",
-        description: `Your personality type is ${personalityType}.`
+        description: `Your personality type is ${personalityType}. You can now view career recommendations.`
       });
+
+      navigate('/recommendations');
     } catch (error) {
       toast({
         title: "Error",
@@ -154,60 +148,6 @@ export default function CareerQuiz() {
     setAnswers({});
     setExistingResult(null);
   };
-
-  // Show completion screen after quiz is submitted
-  if (quizCompleted && completedResult) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-2xl mx-auto">
-            <Card className="border-primary/20">
-              <CardHeader className="text-center">
-                <div className="mx-auto mb-4 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Brain className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle className="text-3xl">Quiz Completed! 🎉</CardTitle>
-                <CardDescription className="text-lg mt-2">
-                  Congratulations! You've completed the career assessment.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="text-center p-6 bg-primary/5 rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-2">Your Personality Type</p>
-                  <Badge variant="default" className="text-2xl py-2 px-4">
-                    {completedResult.personality_type}
-                  </Badge>
-                </div>
-                
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-center">Your RIASEC Scores</h4>
-                  <div className="grid gap-2">
-                    {Object.entries(completedResult.riasec_scores).map(([type, score]) => (
-                      <div key={type} className="flex justify-between items-center p-2 bg-muted/50 rounded">
-                        <span className="font-medium">{type}</span>
-                        <Badge variant="outline">{score as number}/15</Badge>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="pt-4">
-                  <Button 
-                    onClick={() => navigate('/recommendations')} 
-                    className="w-full h-12 text-lg"
-                    size="lg"
-                  >
-                    <ArrowRight className="h-5 w-5 mr-2" />
-                    View Career Recommendations
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (existingResult) {
     return (
@@ -243,7 +183,7 @@ export default function CareerQuiz() {
                   {Object.entries(existingResult.riasec_scores).map(([type, score]) => (
                     <div key={type} className="flex justify-between items-center">
                       <span className="font-medium">{type}</span>
-                      <Badge variant="outline">{score as number}/15</Badge>
+                      <Badge variant="outline">{score as number}/25</Badge>
                     </div>
                   ))}
                 </div>
