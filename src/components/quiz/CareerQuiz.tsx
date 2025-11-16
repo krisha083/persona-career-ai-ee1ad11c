@@ -12,47 +12,32 @@ import { Loader2, Brain, ArrowLeft, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const RIASEC_QUESTIONS = [
-  // Realistic (R)
+  // Realistic (R) - 3 questions
   { id: 1, text: "I enjoy working with tools and machinery", category: "R" },
   { id: 2, text: "I like to build things with my hands", category: "R" },
-  { id: 3, text: "I prefer practical, hands-on activities", category: "R" },
-  { id: 4, text: "I enjoy outdoor activities and physical work", category: "R" },
-  { id: 5, text: "I like to fix things that are broken", category: "R" },
+  { id: 3, text: "I like to fix things that are broken", category: "R" },
   
-  // Investigative (I)
-  { id: 6, text: "I enjoy solving complex problems", category: "I" },
-  { id: 7, text: "I like to analyze data and information", category: "I" },
-  { id: 8, text: "I enjoy conducting research and experiments", category: "I" },
-  { id: 9, text: "I like to understand how things work", category: "I" },
-  { id: 10, text: "I enjoy learning about science and technology", category: "I" },
+  // Investigative (I) - 3 questions
+  { id: 4, text: "I enjoy solving complex problems", category: "I" },
+  { id: 5, text: "I like to analyze data and information", category: "I" },
+  { id: 6, text: "I like to understand how things work", category: "I" },
   
-  // Artistic (A)
-  { id: 11, text: "I enjoy creative and artistic activities", category: "A" },
-  { id: 12, text: "I like to express myself through art, music, or writing", category: "A" },
-  { id: 13, text: "I enjoy working in unstructured environments", category: "A" },
-  { id: 14, text: "I like to create original ideas and designs", category: "A" },
-  { id: 15, text: "I enjoy performing or entertaining others", category: "A" },
+  // Artistic (A) - 2 questions
+  { id: 7, text: "I enjoy creative and artistic activities", category: "A" },
+  { id: 8, text: "I like to express myself through art, music, or writing", category: "A" },
   
-  // Social (S)
-  { id: 16, text: "I enjoy helping and teaching others", category: "S" },
-  { id: 17, text: "I like to work in teams and collaborate", category: "S" },
-  { id: 18, text: "I enjoy counseling or advising people", category: "S" },
-  { id: 19, text: "I like to volunteer for community causes", category: "S" },
-  { id: 20, text: "I enjoy working with people from diverse backgrounds", category: "S" },
+  // Social (S) - 2 questions
+  { id: 9, text: "I enjoy helping and teaching others", category: "S" },
+  { id: 10, text: "I like to work in teams and collaborate", category: "S" },
   
-  // Enterprising (E)
-  { id: 21, text: "I enjoy leading and managing others", category: "E" },
-  { id: 22, text: "I like to persuade and influence people", category: "E" },
-  { id: 23, text: "I enjoy taking risks and making decisions", category: "E" },
-  { id: 24, text: "I like to start new projects and ventures", category: "E" },
-  { id: 25, text: "I enjoy competing and achieving goals", category: "E" },
+  // Enterprising (E) - 3 questions
+  { id: 11, text: "I enjoy leading and managing others", category: "E" },
+  { id: 12, text: "I enjoy taking risks and making decisions", category: "E" },
+  { id: 13, text: "I like to start new projects and ventures", category: "E" },
   
-  // Conventional (C)
-  { id: 26, text: "I enjoy working with details and data", category: "C" },
-  { id: 27, text: "I like following established procedures", category: "C" },
-  { id: 28, text: "I enjoy organizing and maintaining records", category: "C" },
-  { id: 29, text: "I like working in structured environments", category: "C" },
-  { id: 30, text: "I enjoy mathematical and clerical tasks", category: "C" }
+  // Conventional (C) - 2 questions
+  { id: 14, text: "I enjoy working with details and data", category: "C" },
+  { id: 15, text: "I enjoy organizing and maintaining records", category: "C" }
 ];
 
 export default function CareerQuiz() {
