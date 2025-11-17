@@ -43,6 +43,14 @@ export default function RecommendationsPage() {
     }
   }, [user]);
 
+  // Auto-generate recommendations if quiz is completed but no recommendations exist
+  useEffect(() => {
+    if (quizResult && recommendations.length === 0 && !loading && !generating) {
+      console.log('Auto-generating recommendations for completed quiz');
+      generateRecommendations();
+    }
+  }, [quizResult, recommendations, loading, generating]);
+
   const fetchQuizResult = async () => {
     const { data } = await supabase
       .from('quiz_results')
@@ -210,15 +218,15 @@ ${data.roadmap}
                 <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                   <Target className="h-8 w-8 text-primary" />
                 </div>
-                <CardTitle className="text-2xl font-bold">Complete Your Career Assessment</CardTitle>
-                <CardDescription className="text-lg">
-                  Discover your ideal career path with our comprehensive personality-based assessment
+                <CardTitle className="text-3xl mb-2">Complete the Quiz First</CardTitle>
+                <CardDescription className="text-base">
+                  You need to complete the career assessment quiz before viewing recommendations.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Button onClick={() => navigate('/quiz')} className="w-full btn-gradient h-12 text-lg">
-                  <Brain className="mr-2 h-5 w-5" />
-                  Take Career Quiz
+              <CardContent className="flex justify-center pt-2">
+                <Button onClick={() => navigate('/quiz')} size="lg" className="hover-scale">
+                  <Brain className="h-4 w-4 mr-2" />
+                  Take the Quiz
                 </Button>
               </CardContent>
             </Card>

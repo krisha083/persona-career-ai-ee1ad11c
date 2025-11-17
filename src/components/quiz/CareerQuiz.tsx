@@ -122,13 +122,33 @@ export default function CareerQuiz() {
   };
 
   const submitQuiz = async () => {
-    if (!user) return;
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to submit the quiz.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check if all questions are answered
+    const unansweredQuestions = RIASEC_QUESTIONS.filter(q => !answers[q.id]);
+    if (unansweredQuestions.length > 0) {
+      toast({
+        title: "Incomplete Quiz",
+        description: "Please answer all questions before submitting.",
+        variant: "destructive"
+      });
+      return;
+    }
     
     setLoading(true);
     
     try {
       const riasecScores = calculateRIASECScores();
       const personalityType = getPersonalityType(riasecScores);
+
+      console.log('Submitting quiz with scores:', riasecScores, 'Type:', personalityType);
 
       const { error } = await supabase
         .from('quiz_results')
@@ -137,25 +157,35 @@ export default function CareerQuiz() {
           quiz_answers: answers,
           riasec_scores: riasecScores,
           personality_type: personalityType
+        }, {
+          onConflict: 'user_id'
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error saving quiz:', error);
+        throw error;
+      }
+
+      console.log('Quiz saved successfully, navigating to recommendations');
 
       toast({
-        title: "Quiz Completed!",
-        description: `Your personality type is ${personalityType}. You can now view career recommendations.`
+        title: "Quiz Completed! 🎉",
+        description: `Your personality type is ${personalityType}. Redirecting to career recommendations...`
       });
 
-      navigate('/recommendations');
+      // Small delay to show the toast before navigation
+      setTimeout(() => {
+        navigate('/recommendations');
+      }, 500);
     } catch (error) {
+      console.error('Quiz submission error:', error);
       toast({
         title: "Error",
-        description: "Failed to save quiz results. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to save quiz results. Please try again.",
         variant: "destructive"
       });
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   const retakeQuiz = () => {
