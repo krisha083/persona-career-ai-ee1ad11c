@@ -100,24 +100,58 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="p-3 bg-primary/10 rounded-full">
-              <Brain className="h-8 w-8 text-primary" />
+    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+      
+      <div className="w-full max-w-md relative z-10">
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="flex justify-center mb-6">
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+              <div className="relative p-5 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl shadow-xl">
+                <Brain className="h-12 w-12 text-primary" />
+              </div>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Persona Career AI</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-3">
+            Persona Career AI
+          </h1>
+          <p className="text-muted-foreground text-lg">
             Discover your ideal career path with AI-powered recommendations
           </p>
+          <div className="flex justify-center gap-8 mt-6">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Brain className="h-4 w-4 text-primary" />
+                <span className="font-bold text-foreground">Smart</span>
+              </div>
+              <p className="text-xs text-muted-foreground">AI Analysis</p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Target className="h-4 w-4 text-primary" />
+                <span className="font-bold text-foreground">Accurate</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Predictions</p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <TrendingUp className="h-4 w-4 text-primary" />
+                <span className="font-bold text-foreground">Growth</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Focused</p>
+            </div>
+          </div>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Welcome</CardTitle>
-            <CardDescription>
+        <Card className="card-gradient border-0 shadow-2xl animate-scale-in">
+          <CardHeader className="text-center pb-2">
+            <CardTitle className="text-2xl">Welcome</CardTitle>
+            <CardDescription className="text-base">
               Sign in or create an account to get personalized career recommendations
             </CardDescription>
           </CardHeader>

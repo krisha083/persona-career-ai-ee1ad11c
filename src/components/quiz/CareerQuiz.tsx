@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Brain, ArrowLeft, ArrowRight } from "lucide-react";
+import { Loader2, Brain, ArrowLeft, ArrowRight, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const RIASEC_QUESTIONS = [
@@ -166,54 +166,73 @@ export default function CareerQuiz() {
 
   if (existingResult) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-2xl mx-auto">
-            <div className="flex items-center mb-6">
-              <Button variant="ghost" onClick={() => navigate('/')} className="mr-4">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
-              </Button>
-            </div>
+      <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+        <div className="container mx-auto px-4 py-8 max-w-3xl">
+          <div className="flex items-center mb-6 animate-fade-in">
+            <Button variant="ghost" onClick={() => navigate('/')} className="hover-scale">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Brain className="h-5 w-5 mr-2 text-primary" />
-                  Quiz Already Completed
-                </CardTitle>
-                <CardDescription>
-                  You have already completed the career assessment
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center">
-                  <Badge variant="default" className="text-lg p-2">
-                    Your Personality Type: {existingResult.personality_type}
-                  </Badge>
+          <Card className="card-gradient border-0 shadow-xl animate-scale-in">
+            <CardHeader className="text-center">
+              <div className="flex justify-center mb-4">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                  <div className="relative p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl">
+                    <Brain className="h-10 w-10 text-primary" />
+                  </div>
                 </div>
-                
-                <div className="grid gap-2">
-                  <h4 className="font-semibold">Your RIASEC Scores:</h4>
+              </div>
+              <CardTitle className="text-3xl mb-2">
+                Quiz Already Completed
+              </CardTitle>
+              <CardDescription className="text-base">
+                You have already completed the career assessment
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="text-center p-6 bg-gradient-to-br from-primary/10 to-transparent rounded-xl border border-primary/20">
+                <p className="text-sm text-muted-foreground mb-2">Your Personality Type</p>
+                <Badge variant="default" className="text-2xl px-6 py-3 font-bold">
+                  {existingResult.personality_type}
+                </Badge>
+              </div>
+              
+              <div className="space-y-3">
+                <h4 className="font-semibold text-lg flex items-center gap-2">
+                  <Target className="h-5 w-5 text-primary" />
+                  Your RIASEC Scores
+                </h4>
+                <div className="grid gap-3">
                   {Object.entries(existingResult.riasec_scores).map(([type, score]) => (
-                    <div key={type} className="flex justify-between items-center">
-                      <span className="font-medium">{type}</span>
-                      <Badge variant="outline">{score as number}/25</Badge>
+                    <div key={type} className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 hover:bg-secondary/70 transition-colors">
+                      <span className="font-medium text-foreground">{type}</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full transition-all duration-500"
+                            style={{ width: `${((score as number) / 25) * 100}%` }}
+                          />
+                        </div>
+                        <Badge variant="outline" className="min-w-[4rem] justify-center">{score as number}/25</Badge>
+                      </div>
                     </div>
                   ))}
                 </div>
+              </div>
 
-                <div className="flex gap-4">
-                  <Button onClick={() => navigate('/recommendations')} className="flex-1">
-                    View Recommendations
-                  </Button>
-                  <Button variant="outline" onClick={retakeQuiz} className="flex-1">
-                    Retake Quiz
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              <div className="flex gap-4 pt-4">
+                <Button onClick={() => navigate('/recommendations')} className="flex-1 hover-scale" size="lg">
+                  View Recommendations
+                </Button>
+                <Button variant="outline" onClick={retakeQuiz} className="flex-1 hover-scale" size="lg">
+                  Retake Quiz
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
@@ -224,95 +243,115 @@ export default function CareerQuiz() {
   const canProceed = answers[RIASEC_QUESTIONS[currentQuestion].id] !== undefined;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center mb-6">
-            <Button variant="ghost" onClick={() => navigate('/')} className="mr-4">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
-            </Button>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+      <div className="container mx-auto px-4 py-8 max-w-3xl">
+        <div className="flex items-center mb-6 animate-fade-in">
+          <Button variant="ghost" onClick={() => navigate('/')} className="hover-scale">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Dashboard
+          </Button>
+        </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Brain className="h-5 w-5 mr-2 text-primary" />
-                Career Assessment Quiz
-              </CardTitle>
-              <CardDescription>
-                Answer these questions honestly to discover your career interests
-              </CardDescription>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Question {currentQuestion + 1} of {RIASEC_QUESTIONS.length}</span>
-                  <span>{Math.round(progress)}% Complete</span>
+        <Card className="card-gradient border-0 shadow-xl animate-scale-in">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                <div className="relative p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl">
+                  <Brain className="h-10 w-10 text-primary" />
                 </div>
-                <Progress value={progress} className="w-full" />
               </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">
+            </div>
+            <CardTitle className="text-3xl mb-2">
+              Career Assessment Quiz
+            </CardTitle>
+            <CardDescription className="text-base">
+              Answer these questions honestly to discover your career interests
+            </CardDescription>
+            <div className="space-y-3 pt-4">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground font-medium">Question {currentQuestion + 1} of {RIASEC_QUESTIONS.length}</span>
+                <span className="text-lg font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  {Math.round(progress)}%
+                </span>
+              </div>
+              <div className="relative h-3 bg-secondary/50 rounded-full overflow-hidden shadow-inner">
+                <div 
+                  className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-primary/80 transition-all duration-500 ease-out rounded-full"
+                  style={{ width: `${progress}%` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6 py-8">
+            <div className="space-y-6">
+              <div className="p-6 bg-gradient-to-br from-secondary/30 to-transparent rounded-xl border border-border/50">
+                <h3 className="text-xl font-semibold mb-6 text-foreground">
                   {RIASEC_QUESTIONS[currentQuestion].text}
                 </h3>
                 
                 <RadioGroup
                   value={answers[RIASEC_QUESTIONS[currentQuestion].id]?.toString() || ""}
                   onValueChange={handleAnswer}
+                  className="space-y-3"
                 >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="1" id="strongly-disagree" />
-                    <Label htmlFor="strongly-disagree">Strongly Disagree</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="2" id="disagree" />
-                    <Label htmlFor="disagree">Disagree</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="3" id="neutral" />
-                    <Label htmlFor="neutral">Neutral</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="4" id="agree" />
-                    <Label htmlFor="agree">Agree</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="5" id="strongly-agree" />
-                    <Label htmlFor="strongly-agree">Strongly Agree</Label>
-                  </div>
+                  {[
+                    { value: "5", label: "Strongly Agree", emoji: "😍" },
+                    { value: "4", label: "Agree", emoji: "👍" },
+                    { value: "3", label: "Neutral", emoji: "😐" },
+                    { value: "2", label: "Disagree", emoji: "👎" },
+                    { value: "1", label: "Strongly Disagree", emoji: "😣" }
+                  ].map((option) => (
+                    <div key={option.value} className="flex items-center space-x-3 p-4 rounded-lg hover:bg-secondary/50 transition-all cursor-pointer group">
+                      <RadioGroupItem value={option.value} id={option.value} className="hover-scale" />
+                      <Label 
+                        htmlFor={option.value} 
+                        className="flex-1 cursor-pointer text-base font-medium group-hover:text-primary transition-colors flex items-center gap-3"
+                      >
+                        <span className="text-2xl">{option.emoji}</span>
+                        {option.label}
+                      </Label>
+                    </div>
+                  ))}
                 </RadioGroup>
               </div>
 
-              <div className="flex justify-between">
+              <div className="flex gap-4">
                 <Button
                   variant="outline"
                   onClick={prevQuestion}
                   disabled={currentQuestion === 0}
+                  className="flex-1 hover-scale"
+                  size="lg"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Previous
                 </Button>
-
-                {isLastQuestion ? (
-                  <Button
-                    onClick={submitQuiz}
-                    disabled={!canProceed || loading}
-                  >
-                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Submit Quiz
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={nextQuestion}
-                    disabled={!canProceed}
-                  >
-                    Next
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Button>
-                )}
+                <Button
+                  onClick={isLastQuestion ? submitQuiz : nextQuestion}
+                  disabled={!canProceed || loading}
+                  className="flex-1 hover-scale font-semibold"
+                  size="lg"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : isLastQuestion ? (
+                    "Complete Quiz"
+                  ) : (
+                    <>
+                      Next
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </>
+                  )}
+                </Button>
               </div>
-            </CardContent>
+            </div>
+          </CardContent>
           </Card>
         </div>
       </div>

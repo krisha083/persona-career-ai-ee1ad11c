@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 import { 
   User, 
   Brain, 
@@ -112,80 +113,128 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10">
       {/* Header */}
-      <div className="border-b bg-card/50 backdrop-blur">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Persona Career AI</h1>
-            <p className="text-sm text-muted-foreground">
-              Welcome back, {profile?.name || user?.email}
-            </p>
+      <div className="border-b bg-card/80 backdrop-blur-xl shadow-lg">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex justify-between items-center">
+            <div className="animate-fade-in">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Persona Career AI
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Welcome back, <span className="font-semibold text-foreground">{profile?.name || user?.email}</span>
+              </p>
+            </div>
+            <Button variant="ghost" onClick={signOut} className="hover-scale">
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
           </div>
-          <Button variant="ghost" onClick={signOut}>
-            <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
-          </Button>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Progress Section */}
-        <Card className="mb-8">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Progress Overview */}
+        <Card className="mb-8 card-gradient border-0 shadow-xl animate-fade-in">
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <Target className="h-5 w-5 mr-2 text-primary" />
-              Your Progress
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Target className="h-6 w-6 text-primary" />
+              </div>
+              Your Journey Progress
             </CardTitle>
-            <CardDescription>
-              Complete all steps to get personalized career recommendations
-            </CardDescription>
+            <CardDescription className="text-base mt-2">Complete all steps to unlock personalized career recommendations</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center space-x-4">
-              <div className="flex-1">
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div 
-                    className="bg-primary h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${getProgressPercentage()}%` }}
-                  />
+            <div className="space-y-6">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground font-medium">Overall Progress</span>
+                <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  {getProgressPercentage()}%
+                </span>
+              </div>
+              <div className="relative h-4 bg-secondary/50 rounded-full overflow-hidden shadow-inner">
+                <div 
+                  className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-primary/80 transition-all duration-700 ease-out rounded-full shadow-lg"
+                  style={{ width: `${getProgressPercentage()}%` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent animate-pulse"></div>
                 </div>
               </div>
-              <Badge variant={getProgressPercentage() === 100 ? "default" : "secondary"}>
-                {getProgressPercentage()}% Complete
-              </Badge>
+              <div className="flex gap-3 pt-2 flex-wrap">
+                {Object.entries(completionStatus).map(([key, completed]) => (
+                  <Badge 
+                    key={key} 
+                    variant={completed ? "default" : "secondary"}
+                    className="capitalize px-4 py-2 text-sm font-medium hover-scale"
+                  >
+                    {completed ? <CheckCircle className="h-4 w-4 mr-2" /> : <Clock className="h-4 w-4 mr-2" />}
+                    {key}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Action Cards */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+        {/* Dashboard Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {dashboardCards.map((card, index) => {
             const Icon = card.icon;
             return (
-              <Card key={index} className="hover:shadow-lg transition-all duration-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <Icon className="h-5 w-5 mr-2 text-primary" />
-                      {card.title}
+              <Card 
+                key={index}
+                className={`relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 card-professional group animate-fade-in ${
+                  card.completed ? 'border-primary/30 bg-gradient-to-br from-primary/5 to-transparent' : ''
+                }`}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                {card.completed && (
+                  <div className="absolute top-4 right-4 animate-scale-in">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-primary/20 rounded-full blur-md"></div>
+                      <CheckCircle className="relative h-7 w-7 text-primary" />
                     </div>
-                    {card.completed ? (
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                    ) : (
-                      <Clock className="h-5 w-5 text-muted-foreground" />
-                    )}
-                  </CardTitle>
-                  <CardDescription>{card.description}</CardDescription>
+                  </div>
+                )}
+                <CardHeader className="pb-4">
+                  <div className="flex items-start gap-4">
+                    <div className={`p-4 rounded-xl transition-all duration-300 group-hover:scale-110 ${
+                      card.completed 
+                        ? 'bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg shadow-primary/20' 
+                        : 'bg-gradient-to-br from-secondary to-secondary/80'
+                    }`}>
+                      <Icon className={`h-7 w-7 ${
+                        card.completed ? 'text-primary' : 'text-muted-foreground'
+                      }`} />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors">
+                        {card.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm leading-relaxed">
+                        {card.description}
+                      </CardDescription>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                <Button 
-                  className="w-full" 
-                  variant={card.completed ? "secondary" : "default"}
-                  onClick={() => window.location.href = card.href}
-                >
-                  {card.completed ? "Update" : card.action}
-                </Button>
+                  <Button 
+                    onClick={() => navigate(card.href)}
+                    variant={card.completed ? "secondary" : "default"}
+                    className="w-full hover-scale font-semibold"
+                    size="lg"
+                  >
+                    {card.completed ? (
+                      <>
+                        <FileText className="h-4 w-4 mr-2" />
+                        Update
+                      </>
+                    ) : (
+                      card.action
+                    )}
+                  </Button>
                 </CardContent>
               </Card>
             );
