@@ -299,6 +299,5 @@ export default function ProfileForm() {
           </Card>
         </div>
       </div>
-    </div>
   );
 }

@@ -25,6 +25,7 @@ interface Profile {
 
 export default function Dashboard() {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [completionStatus, setCompletionStatus] = useState({
     profile: false,
