@@ -241,33 +241,6 @@ export default function Dashboard() {
             );
           })}
         </div>
-
-        {/* Additional Actions */}
-        {completionStatus.recommendations && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <FileText className="h-5 w-5 mr-2 text-primary" />
-                Career Resources
-              </CardTitle>
-              <CardDescription>
-                Download your personalized career roadmap and recommendations
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-4">
-                <Button variant="outline">
-                  <Download className="h-4 w-4 mr-2" />
-                  Download Career Roadmap PDF
-                </Button>
-                <Button variant="outline">
-                  <FileText className="h-4 w-4 mr-2" />
-                  View Detailed Analysis
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </div>
   );
