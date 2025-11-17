@@ -355,6 +355,5 @@ export default function CareerQuiz() {
           </Card>
         </div>
       </div>
-    </div>
   );
 }
