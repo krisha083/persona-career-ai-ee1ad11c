@@ -145,28 +145,34 @@ export default function ProfileForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center mb-6">
-            <Button variant="ghost" onClick={() => navigate('/')} className="mr-4">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
-            </Button>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="flex items-center mb-6 animate-fade-in">
+          <Button variant="ghost" onClick={() => navigate('/')} className="hover-scale">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Dashboard
+          </Button>
+        </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <User className="h-5 w-5 mr-2 text-primary" />
-                Complete Your Profile
-              </CardTitle>
-              <CardDescription>
-                Tell us about yourself to get personalized career recommendations
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+        <Card className="card-gradient border-0 shadow-xl animate-scale-in">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                <div className="relative p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl">
+                  <User className="h-10 w-10 text-primary" />
+                </div>
+              </div>
+            </div>
+            <CardTitle className="text-3xl mb-2">
+              Complete Your Profile
+            </CardTitle>
+            <CardDescription className="text-base">
+              Tell us about yourself to get personalized career recommendations
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
