@@ -240,20 +240,30 @@ export default function CareerQuiz() {
                   Your RIASEC Scores
                 </h4>
                 <div className="grid gap-3">
-                  {Object.entries(existingResult.riasec_scores).map(([type, score]) => (
-                    <div key={type} className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 hover:bg-secondary/70 transition-colors">
-                      <span className="font-medium text-foreground">{type}</span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full transition-all duration-500"
-                            style={{ width: `${((score as number) / 25) * 100}%` }}
-                          />
+                  {Object.entries(existingResult.riasec_scores).map(([type, score]) => {
+                    const riasecNames: { [key: string]: string } = {
+                      'R': 'Realistic',
+                      'I': 'Investigative',
+                      'A': 'Artistic',
+                      'S': 'Social',
+                      'E': 'Enterprising',
+                      'C': 'Conventional'
+                    };
+                    return (
+                      <div key={type} className="flex justify-between items-center p-3 rounded-lg bg-secondary/50 hover:bg-secondary/70 transition-colors">
+                        <span className="font-medium text-foreground">{riasecNames[type] || type}</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full transition-all duration-500"
+                              style={{ width: `${((score as number) / 30) * 100}%` }}
+                            />
+                          </div>
+                          <Badge variant="outline" className="min-w-[4rem] justify-center">{score as number}/30</Badge>
                         </div>
-                        <Badge variant="outline" className="min-w-[4rem] justify-center">{score as number}/25</Badge>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
