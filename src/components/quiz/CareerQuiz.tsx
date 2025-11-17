@@ -168,15 +168,19 @@ export default function CareerQuiz() {
 
       console.log('Quiz saved successfully, navigating to recommendations');
 
-      toast({
-        title: "Quiz Completed! 🎉",
-        description: `Your personality type is ${personalityType}. Redirecting to career recommendations...`
+      // Navigate immediately to prevent brief flash of quiz page
+      navigate('/recommendations', { 
+        state: { 
+          justCompleted: true, 
+          personalityType 
+        } 
       });
 
-      // Small delay to show the toast before navigation
-      setTimeout(() => {
-        navigate('/recommendations');
-      }, 500);
+      // Show toast after navigation
+      toast({
+        title: "Quiz Completed! 🎉",
+        description: `Your personality type is ${personalityType}.`
+      });
     } catch (error) {
       console.error('Quiz submission error:', error);
       toast({
